@@ -18,7 +18,10 @@ $api = app('Dingo\Api\Routing\Router');
 $api->version('v1', [
     'namespace' => 'App\Http\Controllers\Api'
 ], function($api) {
-    // 短信验证码
-    $api->get('verificationCodes', 'VerificationCodesController@getCode')
-        ->name('api.verificationCodes.getCode');
+    // 获取 access_token
+    $api->get('refreshAccessToken', 'VerificationCodesController@refreshAccessToken')
+        ->name('refreshAccessToken');
+
+    $api->get('getAccessToken', 'VerificationCodesController@getAccessToken')
+        ->name('getAccessToken');
 });

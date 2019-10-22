@@ -1,37 +1,6 @@
 <?php
-
-namespace App\Http\Controllers\Api;
-
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redis;
-
-class VerificationCodesController extends Controller
+class ApiService
 {
-    public function getAccessToken()
-    {
-        cache(['refresh_access_token' => 'd20f6dd3268072e59fdef63cde171e3108b491d5'], now()->addMinutes(10));
-    }
-
-    public function refreshAccessToken()
-    {
-        $url = 'https://ad.toutiao.com/open_api/oauth2/refresh_token/';
-
-        $body = [
-            'app_id' => env('AD_APP_ID'),
-            'secret' => env('AD_APP_SECRET'),
-            'grant_type' => 'refresh_token',
-            'refresh_token' => cache('refresh_access_token'),
-        ];
-
-        $res = $this->getRequest($url, $body, [], 'POST');
-
-        $json = json_decode($res);
-
-        cache(['refresh_access_token' => $json->data->refresh_token], now()->addMinutes(10));
-
-        return response($res);
-    }
-
     public function getRequest($url, $option = [], $header = [], $type = 'GET')
     {
         $curl = curl_init();
