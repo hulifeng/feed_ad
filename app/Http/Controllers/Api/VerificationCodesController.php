@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Cache;
 
 class VerificationCodesController extends Controller
 {
     public function getAccessToken()
     {
-        cache(['refresh_access_token' => 'd20f6dd3268072e59fdef63cde171e3108b491d5'], now()->addMinutes(10));
+        Cache::put('refresh_access_token', '219a80904629b4edc2bf123c086792517ffbb6be');
     }
 
     public function refreshAccessToken()
@@ -20,14 +20,14 @@ class VerificationCodesController extends Controller
             'app_id' => env('AD_APP_ID'),
             'secret' => env('AD_APP_SECRET'),
             'grant_type' => 'refresh_token',
-            'refresh_token' => cache('refresh_access_token'),
+            'refresh_token' => Cache::get('refresh_access_token'),
         ];
 
         $res = $this->getRequest($url, $body, [], 'POST');
 
         $json = json_decode($res);
 
-        cache(['refresh_access_token' => $json->data->refresh_token], now()->addMinutes(10));
+        Cache::put('refresh_access_token', $json->data->refresh_token);
 
         return response($res);
     }
